@@ -1,19 +1,37 @@
 from datetime import datetime
-import os
+import requests
+
 
 def generate_log(data):
-    # TODO: Implement log generation logic
+    # Validate that the provided log data is a list.
+    if not isinstance(data, list):
+        raise ValueError("data must be a list")
 
-    # STEP 1: Validate input
-    # Hint: Check if data is a list
+    # Create a filename using today's date.
+    filename = f"log_{datetime.now().strftime('%Y%m%d')}.txt"
 
-    # STEP 2: Generate a filename with today's date (e.g., "log_20250408.txt")
-    # Hint: Use datetime.now().strftime("%Y%m%d")
+    # Write each log entry on its own line.
+    with open(filename, "w") as file:
+        for entry in data:
+            file.write(f"{entry}\n")
 
-    # STEP 3: Write the log entries to a file using File I/O
-    # Use a with open() block and write each line from the data list
-    # Example: file.write(f"{entry}\n")
+    print(f"Log written to {filename}")
 
-    # STEP 4: Print a confirmation message with the filename
+    return filename
 
-    pass
+
+if __name__ == "__main__":
+    # Use the external requests package without making a network request.
+    request = requests.Request(
+        "GET",
+        "https://example.com"
+    ).prepare()
+
+    log_data = [
+        "User logged in",
+        "User updated profile",
+        "Report exported",
+        f"Prepared request: {request.method} {request.url}",
+    ]
+
+    generate_log(log_data)
