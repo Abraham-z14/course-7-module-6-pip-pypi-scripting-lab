@@ -1,148 +1,202 @@
+# Python Automation Log Generator
 
-# Module Lab: Automating Python Projects with Pip, PyPi & Scripting
+A Python automation project that demonstrates scripting, file I/O, third-party packages, dependency management, and reusable functions.
 
-## Learning Goals
+The project generates dated log files from a list of entries and uses the external `requests` package as part of the script.
 
-- Automate Python tasks using command-line scripts.
-- Use pip to install and manage external packages.
-- Write modular Python scripts with clean entry points.
-- Track dependencies using a requirements.txt file.
-- Generate structured outputs using file I/O techniques.
+## Features
 
-## Introduction
+The project can:
 
-In this lab, you will build a **Python automation tool** that uses pip-installed packages and scriptable logic to automate a real-world task. Your script will:
+- Generate a dated text log file
+- Write each supplied log entry on its own line
+- Validate input before creating a log
+- Handle empty log lists
+- Raise a `ValueError` for invalid input
+- Print a confirmation message after creating a file
+- Return the generated filename
+- Use the third-party `requests` package
+- Track dependencies with `requirements.txt`
+- Ignore generated log files through `.gitignore`
 
-- Use pip to install third-party packages (e.g., `requests`).
-- Fetch or process external data.
-- Write structured output to a local file.
-- Track all dependencies in `requirements.txt` for reproducibility.
+## `generate_log()`
 
-This lab emphasizes automation, scripting practices, and environment management using the standard Python ecosystem.
+The main function accepts a list of log entries.
 
-## Setup Instructions
-
-### Fork and Clone the Repository
-
-1. Go to the provided GitHub repository link.
-2. Fork the repository to your GitHub account.
-3. Clone the forked repository to your local machine using:
-
-```bash
-git clone <repo-url>
-cd module-lab-pip-pypi-scripting
+```python
+generate_log([
+    "User logged in",
+    "User updated profile",
+    "Report exported",
+])
 ```
 
-### Install Python and pip
+The function creates a file using the current date:
 
-Ensure Python and pip are installed:
-
-```bash
-python --version
-pip --version
+```text
+log_YYYYMMDD.txt
 ```
 
-Optionally, create a virtual environment:
+For example:
 
-```bash
-python -m venv venv
-source venv/bin/activate  # macOS/Linux
-venv\Scripts\activate   # Windows
+```text
+log_20261105.txt
 ```
 
-Install any required dependencies:
+Each entry is written to its own line.
+
+## Input Validation
+
+The function requires a list.
+
+Invalid input raises a `ValueError`.
+
+```python
+generate_log("This is not a list")
+```
+
+An empty list is valid and creates an empty log file.
+
+```python
+generate_log([])
+```
+
+## External Package
+
+This project uses the `requests` package installed from PyPI.
+
+The script demonstrates use of `requests` by preparing an HTTP request without requiring an active network connection.
+
+```python
+request = requests.Request(
+    "GET",
+    "https://example.com"
+).prepare()
+```
+
+This keeps the script reproducible while still demonstrating integration with an external package.
+
+## Script Entry Point
+
+The script uses:
+
+```python
+if __name__ == "__main__":
+```
+
+This allows the `generate_log()` function to be imported by other modules without automatically running the demonstration code.
+
+## Running the Script
+
+Enter the project environment:
+
+```bash
+pipenv shell
+```
+
+Run the script:
+
+```bash
+python lib/generate_log.py
+```
+
+Example output:
+
+```text
+Log written to log_20261105.txt
+```
+
+The generated file contains:
+
+```text
+User logged in
+User updated profile
+Report exported
+Prepared request: GET https://example.com/
+```
+
+Generated `log_*.txt` files are ignored by Git because they are runtime output.
+
+## Dependencies
+
+Install dependencies using:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Tasks
+The project includes `requests` as an external dependency.
 
-### Task 1: Define the Problem
+Dependencies are recorded in:
 
-Your goal is to create a **Python script** that automates a small task:
-
-- Uses one or more pip-installed packages (e.g., `requests`, `pandas`, `rich`)
-- Outputs data to a `.txt` or `.csv` file using File I/O
-- Logs or prints messages to confirm behavior
-- Is executable from the command line
-- Records dependencies in `requirements.txt`
-
----
-
-### Task 2: Determine the Design
-
-You will implement a script with the following design principles:
-
-- Use `pip` to install packages
-- Import modules inside a Python script
-- Wrap logic in `if __name__ == "__main__"` to support reusability
-- Structure output files with filenames that include timestamps
-- Track dependencies using `pip freeze > requirements.txt`
-
----
-
-### Task 3: Develop and Run Your Script
-
-#### Step 1: Create a script called `generate_log.py`
-
-```python
-from datetime import datetime
-
-log_data = ["User logged in", "User updated profile", "Report exported"]
-filename = f"log_{datetime.now().strftime('%Y%m%d')}.txt"
-
-with open(filename, "w") as file:
-    for entry in log_data:
-        file.write(f"{entry}\n")
-
-print(f"Log written to {filename}")
+```text
+requirements.txt
 ```
 
-#### Step 2: Add an API integration using `requests`
+The Pipenv configuration is also stored in:
 
-```python
-import requests
-
-def fetch_data():
-    response = requests.get("https://jsonplaceholder.typicode.com/posts/1")
-    if response.status_code == 200:
-        return response.json()
-    return {}
-
-if __name__ == "__main__":
-    post = fetch_data()
-    print("Fetched Post Title:", post.get("title", "No title found"))
+```text
+Pipfile
+Pipfile.lock
 ```
 
-#### Step 3: Track your dependencies
+## Testing
 
-After installing any packages with `pip install ...`, run:
+Run the automated tests with:
 
 ```bash
-pip freeze > requirements.txt
+python -m pytest
 ```
 
----
+Current result:
 
-## Best Practices
+```text
+5 passed
+```
 
-- Use clear function names (`fetch_data`, `write_log`) for clarity.
-- Always check file write success with print or logging statements.
-- Avoid hardcoding data—use variables and functions where appropriate.
-- Use virtual environments to isolate dependencies.
-- Wrap script logic in `if __name__ == "__main__"` for script reusability.
+The tests verify:
 
----
+- Log file creation
+- Correct filename format
+- Correct file contents
+- Invalid input validation
+- Empty-list behavior
 
-## Conclusion
+## Completed Test Suite
 
-After completing this lab, you will:
+![Completed test suite](images/tests-passing.png)
 
-✅ Automate tasks with Python scripting  
-✅ Use external packages from PyPi with pip  
-✅ Track project dependencies with `requirements.txt`  
-✅ Generate structured output files from your script  
-✅ Structure projects for portability and collaboration
+## Project Structure
 
-These scripting and packaging skills are essential for building automation tools and working in modern Python development workflows.
+```text
+course-7-module-6-pip-pypi-scripting-lab/
+├── images/
+│   └── tests-passing.png
+├── lib/
+│   ├── __init__.py
+│   └── generate_log.py
+├── testing/
+│   ├── __init__.py
+│   └── test_generate_log.py
+├── .gitignore
+├── Pipfile
+├── Pipfile.lock
+├── pytest.ini
+├── requirements.txt
+└── README.md
+```
+
+## Technologies
+
+- Python
+- Pip
+- Pipenv
+- PyPI
+- Requests
+- Pytest
+- Git
+- GitHub
+
+## Author
+
+Abraham Zarate
